@@ -4,6 +4,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
+/**
+ * 4.18 Problem Statement:
+ * Write a class ClockIcon that implements the Icon interface type. Draw an
+ * analog clock whose hour, minute, and second hands show the current
+ * time. To get the current hours and minutes, construct an object of type
+ * GregorianCalendar with the default constructor.
+ */
 public class ClockTester {
 
     public static void main(String[] args) {
@@ -11,30 +18,15 @@ public class ClockTester {
 
         ClockIcon ci = new ClockIcon(500);
         JLabel clockLabel = new JLabel(ci);  //Why does an icon need to be in a label?
-//
-//        final int FIELD_WIDTH = 20;
-//        final JTextField textField = new JTextField(FIELD_WIDTH);
 
         frame.setLayout(new FlowLayout());
         frame.add(clockLabel);
-//        frame.add(label);
-//        frame.add(textField);
-//
-//        ActionListener listener = new
-//                ActionListener()
-//                {
-//                    public void actionPerformed(ActionEvent event)
-//                    {
-//                        label.repaint();
-//                        Date now = new Date();
-//                        textField.setText(now.toString());
-//                    }
-//                };
-//
-//        final int DELAY = 1000;
-//        // milliseconds between timer ticks
-//        Timer t = new Timer(DELAY, listener);
-//        t.start();
+
+        ActionListener l = event -> clockLabel.repaint();
+
+        // Update every 10 ms so we can show off second hand tick/heartbeat of 1/6 second like the real watch
+        Timer t = new Timer(10, l);
+        t.start();
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
