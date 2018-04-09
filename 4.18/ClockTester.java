@@ -1,15 +1,17 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Date;
 
-/**
+/*
  * 4.18 Problem Statement:
  * Write a class ClockIcon that implements the Icon interface type. Draw an
  * analog clock whose hour, minute, and second hands show the current
  * time. To get the current hours and minutes, construct an object of type
  * GregorianCalendar with the default constructor.
+ */
+
+/**
+ * This program displays an animated clock face, styled after a Seiko wrist watch.
  */
 public class ClockTester {
 
@@ -22,6 +24,7 @@ public class ClockTester {
         frame.setLayout(new FlowLayout());
         frame.add(clockLabel);
 
+        // Let's go all out and animate the clock
         ActionListener l = event -> clockLabel.repaint();
 
         // Update every 10 ms so we can show off second hand tick/heartbeat of 1/6 second like the real watch
