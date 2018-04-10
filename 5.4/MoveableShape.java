@@ -37,4 +37,11 @@ public interface MoveableShape
      * @return width of the bounding rectangle
      */
     int getWidth();
+
+    /**
+     * Set width of the bounding rectangle
+     */
+    void setWidth(int width);
+
+    void setY(int y);
 }

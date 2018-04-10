@@ -1,15 +1,18 @@
 // Original source: http://horstmann.com/oodp2/solutions/Ch4/Ex21/CarShape.java
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.Observable;
+import java.util.Observer;
 
 /**
  A car that can be moved around.
  */
-public class CarShape implements MoveableShape
+public class CarShape implements MoveableShape //Observer //DEPRECATED
 {
     /**
      Constructs a car item.
@@ -100,4 +103,24 @@ public class CarShape implements MoveableShape
     private int x;
     private int y;
     private int width;
+
+    /**
+     * This method is called whenever the observed object is changed. An
+     * application calls an {@code Observable} object's
+     * {@code notifyObservers} method to have all the object's
+     * observers notified of the change.
+     *
+     * @param o   the observable object.
+     * @param arg an argument passed to the {@code notifyObservers}
+     */
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
+        //
+    }
+
+    @Override
+    public void setY(int y) {
+        this.y = y;
+    }
 }
