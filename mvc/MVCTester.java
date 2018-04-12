@@ -18,21 +18,26 @@
  * I will see if the responsibilities are appropriately placed.
  */
 
+import java.util.ArrayList;
+
 /**
   Run a test of the mail system using two telephones to access the system
 */
 public class MVCTester
 {
-   /**
-     Creates two phones and connects them to the system.
-   */
-   public static void main(String[] args)
-   {
-      MailSystem system = new MailSystem(MAILBOX_COUNT);
+    /**
+      Creates two phones and connects them to the system.
+    */
+    public static void main(String[] args)
+    {
+//        ArrayList<ChatBoxView> views = new ArrayList<>();
+//        views.add(new ChatBoxView());
 
-      ChatBoxView p1 = new ChatBoxView();
-      p1.run();
-   }
+        ChatBox model = new ChatBox();
+        ChatBoxView view = new ChatBoxView();
+        ChatBoxController controller = new ChatBoxController(model, view);
 
-   private static int MAILBOX_COUNT = 20;
+        model.addObserver(view);
+    }
+
 }
