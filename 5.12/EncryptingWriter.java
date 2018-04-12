@@ -1,9 +1,12 @@
 import java.io.IOException;
 import java.io.Writer;
 
+/**
+ * Overrides write(char[] cbuf, int off, int len) of a Writer.
+ * Characters will be encrypted by Caeser cipher and passed on.
+ */
 public class EncryptingWriter extends Writer {
     private Writer writer;
-
     final private int shift = 3;
 
     /**
@@ -31,11 +34,17 @@ public class EncryptingWriter extends Writer {
         //Encrypt each character in buffer
         for(int i = off; i < (len + off); i++)
         {
-            char encrypted = (char)(cbuf[i] + shift);
+            //Only if the character is alphabetic
+            if (Character.isAlphabetic(cbuf[i])){
+                char encrypted = (char)(cbuf[i] + shift);
+                //If we shifted past Z for uppercase or z for lowercase...
                 if (encrypted > (Character.isUpperCase(cbuf[i]) ? 'Z' : 'z'))
-                    encrypted -= 26;
+                    encrypted -= 26;  //Loop back within the alphabet
                 cbuf[i] = encrypted;
+            }
         }
+
+        this.writer.write(cbuf, off, len);
     }
 
     /**
@@ -67,6 +76,6 @@ public class EncryptingWriter extends Writer {
      */
     @Override
     public void close() throws IOException {
-        writer.close();
+        writer.flush();// writer.close(); // DO NOT LET THIS CLOSE IF USING SYSTEM.OUT
     }
 }

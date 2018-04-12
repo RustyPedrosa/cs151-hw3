@@ -10,45 +10,90 @@
  * three characters (i.e., A becomes D, B becomes E, and so on).
  */
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.Scanner;
+import java.io.*;
 
 public class DecoratorTester {
 
+    /**
+     * Demonstrates EncryptingWriter/DecryptingReader's abilities to enhance Readers/Writers
+     */
     public static void main(String [] args) {
-        String input = "";
+        String filename = "secrets.txt";
 
-        System.out.print("Enter text: ");
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        try {
-            input = in.readLine();
+        try (
+                // Regular Buffered Reader (for console input)
+                InputStreamReader isr = new InputStreamReader(System.in);
+                BufferedReader bisr = new BufferedReader(isr);
+
+                // Decrpyting Buffered Reader (for encrypting console input)
+                // NOT USEFUL FOR THIS TESTER - We use readLine for BufferedReader,
+                // which is not affected/overridden by read()
+                // DecryptingReader dr = new DecryptingReader(isr);
+                // BufferedReader bdr = new BufferedReader(dr);
+
+                //Regular Writer (for console printing)
+                OutputStreamWriter osw = new OutputStreamWriter(System.out);  //Don't close this or System.out will close
+
+                //Encrypting Writer (for encryption before console printing)
+                EncryptingWriter eosw = new EncryptingWriter(osw);
+
+                //Encrypted File reader/writer
+                EncryptingWriter efw = new EncryptingWriter(new FileWriter(filename));
+                FileReader fr = new FileReader(filename);
+                FileReader fr2 = new FileReader(filename);
+        ) {
+            String input = "";
+
+            System.out.println("-------------------------------------");
+            System.out.println("EncryptingWriter testing");
+            System.out.println("-------------------------------------");
+
+            System.out.println("Enter text to encrypt (text will be read with regular Reader): ");
+            input = bisr.readLine();
+            System.out.println();
+
+            efw.write(input);
+            efw.close();
+            System.out.println("Input saved to " + filename + " via FileWriter decorated with EncryptingWriter");
+            System.out.println();
+
+            System.out.println("Original input (printed via OutputStreamWriter):");
+            osw.write(input);
+            osw.flush();  //Important so that all text gets printed in order
+            System.out.println();
+            System.out.println();
+
+            System.out.println("Encrypted input (printed via OutputStreamWriter decorated with EncryptingWriter:");
+            eosw.write(input);
+            eosw.flush();
+            System.out.println();
+            System.out.println();
+
+            System.out.println("-------------------------------------");
+            System.out.println("DecryptingReader testing");
+            System.out.println("-------------------------------------");
+
+            char[] fileContents = new char[input.length()];
+
+            fr.read(fileContents, 0, input.length());
+            System.out.println("Contents of " + filename + " read by regular FileReader:");
+            System.out.println(String.valueOf(fileContents));
+            System.out.println();
+            fr.close();
+
+            DecryptingReader dfr = new DecryptingReader(fr2);
+
+            fileContents = new char[input.length()];
+            //TRICKY!! MUST OVERWRITE APPROPRIATE OVERLOADED FUNCTIONS
+            //STILL NOT WORKING OMG WHY IS CBUF BLANK CHARACTERS
+            dfr.read(fileContents);
+            System.out.println("Contents of " + filename + " read by FileReader decorated by DecryptingReader:");
+            System.out.println(String.valueOf(fileContents));
+            System.out.println();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        System.out.println("System.out.print: " + input);
-
-        System.out.println("Regular writer: ");
-        OutputStreamWriter osw = new OutputStreamWriter(System.out);
-        try {
-            osw.write(input, 0, input.length());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("");
-
-        System.out.println("Encrypted writer:");
-
-        EncryptingWriter ew = new EncryptingWriter(new OutputStreamWriter(System.out));
-        try {
-            ew.write(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        //Note: After this try block, System.out will be closed permanently and can't be used anymore.
     }
 }
